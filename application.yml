@@ -1,0 +1,6 @@
+- hosts: testlink
+  become: true
+  become_user: root
+  remote_user: "{{ remote_user }}"
+  roles:
+    - php

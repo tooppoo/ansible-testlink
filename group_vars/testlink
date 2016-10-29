@@ -1,0 +1,12 @@
+mysql_vars:
+  repo_url: http://dev.mysql.com/get/mysql57-community-release-el6-9.noarch.rpm
+  root_pass: root
+
+php_vars:
+  remi_repo: http://rpms.famillecollet.com/enterprise/remi-release-6.rpm
+  version: 56
+
+testlink:
+  version: 1.9.15
+  download_url: https://sourceforge.net/projects/testlink/files/TestLink%201.9/TestLink%201.9.15/testlink-1.9.15.tar.gz/download
+  unarchive_dest: /var/www/html

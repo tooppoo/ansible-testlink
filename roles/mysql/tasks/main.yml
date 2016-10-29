@@ -1,0 +1,54 @@
+- name: 古いバージョンのmysql削除
+  yum: name=mysql* state=absent
+
+- name: MySQL-pythonモジュールインストール
+  yum: name=MySQL-python state=present
+
+- name: mysql用リポジトリ登録
+  yum: name={{ mysql_vars.repo_url }} state=present
+
+- name: mysql5.6インストール
+  yum:
+    name: "{{ item }}"
+    enablerepo: mysql56-community
+    disablerepo: mysql57-community
+    state: present
+  with_items:
+    - mysql-community-server
+    - mysql-community-client
+    - mysql-community-common
+    - mysql-community-libs
+    - mysql-community-libs-compat
+
+- name: rootユーザー用の設定ファイル作成
+  blockinfile:
+    dest: /root/.my.cnf
+    create: yes
+    state: present
+    content: |
+      [client]
+      user=root
+      password={{ mysql_vars.root_pass }}
+
+- name: mysql起動
+  service: name=mysqld state=restarted enabled=yes
+
+- name: root ユーザのパスワード変更
+  mysql_user:
+    name: "root"
+    host: "{{ item }}"
+    password: "{{ mysql_vars.root_pass }}"
+  with_items:
+    - 127.0.0.1
+    - ::1
+    - localhost.localdomain
+    - localhost
+
+- name: anonymous ユーザの削除
+  mysql_user:
+    name: ""
+    host: "{{ item }}"
+    state: absent
+  with_items:
+    - localhost.localdomain
+    - localhost

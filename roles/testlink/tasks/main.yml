@@ -1,0 +1,45 @@
+- stat: path=/var/www/html/testlink
+  register: testlink_dir
+
+- debug: testlink_dir.stat.exists
+
+- name: testlinkダウンロード
+  unarchive:
+    dest: "{{ testlink.unarchive_dest }}"
+    src: "{{ testlink.download_url }}"
+    remote_src: yes
+    copy: no
+    owner: apache
+    group: apache
+  when: testlink_dir.stat.exists != true
+
+- name: testlinkフォルダー名から、バージョンを削除
+  command: mv {{ testlink.unarchive_dest}}/testlink-{{ testlink.version }} {{ testlink.unarchive_dest}}/testlink
+  when: testlink_dir.stat.exists != true
+
+- name: testlinkをapacheから操作可能に変更
+  file:
+    path: "{{ testlink.unarchive_dest }}/testlink"
+    state: directory
+    owner: apache
+    group: apache
+    recurse: yes
+
+- name: testlinkのログフォルダ(/var/testlink/logs)を作成
+  file:
+    path: /var/testlink/logs
+    state: directory
+    owner: apache
+    group: apache
+    recurse: yes
+
+- name: testlinkのアップロードフォルダ(/var/testlink/upload_area)を作成
+  file:
+    path: /var/testlink/upload_area
+    state: directory
+    owner: apache
+    group: apache
+    recurse: yes
+
+- name: Apache再起動
+  service: name=httpd state=restarted enabled=yes

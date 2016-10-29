@@ -1,0 +1,4 @@
+- include: common.yml
+- include: apache.yml
+- include: database.yml
+- include: application.yml

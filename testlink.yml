@@ -1,0 +1,5 @@
+- hosts: testlink
+  become: true
+  remote_user: "{{ remote_user }}"
+  roles:
+    - testlink

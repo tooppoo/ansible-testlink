@@ -1,0 +1,12 @@
+- name: remiリポジトリインストール
+  yum: name={{ php_vars.remi_repo }} state=present
+
+- name: phpインストール
+  yum: name={{ item }} state=latest enablerepo=remi,remi-php{{ php_vars.version }}
+  with_items:
+    - php
+    - php-devel
+    - php-mbstring
+    - php-pdo
+    - php-gd
+    - php-mysql

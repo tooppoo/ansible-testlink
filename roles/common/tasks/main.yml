@@ -1,0 +1,32 @@
+- name: リポジトリ追加
+  yum: name={{ item }} state=latest
+  with_items:
+    - epel-release
+
+- name: 基本ツール(git, man, wget, vim)インストール
+  yum: name={{ item }} state=latest
+  with_items:
+    - git
+    - man
+    - wget
+    - vim
+
+- name: 開発ツール(Development Tools)インストール
+  yum: name="@Development Tools" state=present
+
+- name: SELINUXモジュールインストール
+  yum: name=libselinux-python state=present
+
+- name: alias設定
+  blockinfile:
+    dest: /etc/profile.d/alias.sh
+    state: present
+    mode: 0755
+    create: yes
+    content: |
+      alias vi=vim
+      alias la="ls -a"
+      alias lal="ll -a"
+      alias lla=lal
+      alias less="less -N"
+      alias grep="grep --color=auto"
